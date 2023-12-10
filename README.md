@@ -1,4 +1,4 @@
-ChatGPT
+
 Word Rotation Game
 Welcome to the Word Rotation Game, a challenging and engaging word puzzle built with C language and SDL2. This game puts your word manipulation skills to the test as you rotate combinations of letters to reach the target word provided by the machine. Additionally, you can reverse the roles and challenge the machine by providing a starting word and a target word, letting the machine find the optimal path.
 Game Overview
