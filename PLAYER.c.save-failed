@@ -1,0 +1,380 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
+#include "bilb.h"
+#include "PLAYER.h"
+#include <stdbool.h>
+#include <time.h>
+
+Uint32 incTIME(Uint32 intervalle , void  *parametre)
+{
+    int *t1 = parametre ;
+    *t1+=1 ;
+    return intervalle ;
+}
+
+void draw_game(SDL_Window *window , SDL_Renderer *renderer )
+{
+    TTF_Font * font = TTF_OpenFont("Gameplay.ttf", 36);
+    SDL_Color comf = {255,255,255} ;
+    SDL_Surface * surfacew1 = TTF_RenderText_Solid(font,"LA COMB FINALE" , comf);
+    SDL_Surface *img = NULL ;
+        SDL_Texture *text = NULL ;
+
+    img = IMG_Load("background3.jpg") ;
+    CreateLettre(renderer ,surfacew1, 209 , 602 , 333 , 40) ;
+    SDL_CreateImageAndTexture(img,text,renderer,window , 0 , 0);
+
+}
+
+void jouer (SDL_Window *window , SDL_Renderer *renderer , int n , int pn)
+{
+
+    SDL_RenderClear(renderer) ;
+///------DECLARATION
+    int   y = 106 , min = 48 , max = 88 , test = 0 , x = 0,j,screen = 21,xc = 297;
+    SDL_Surface *img = NULL, *A = NULL ,*(T4[8]) ,*(T4F[8]),*timer,*temps ;
+    temps = IMG_Load("timer.jpg") ;
+
+    SDL_Texture *text = NULL,*time_text;
+  //  SDL_CreateImageAndTexture(temps,time_text,renderer,window , 0 , 0 );
+    TTF_Font * font = TTF_OpenFont("Gameplay.ttf", 36);
+   // TTF_Font * font3 = TTF_OpenFont("Gameplay.ttf", 20);
+    SDL_Color comf = {255,255,255} ;
+    SDL_Surface * surfacew1 = TTF_RenderText_Solid(font,"LA COMB FINALE" , comf);
+//    SDL_Surface * Nn = TTF_RenderText_Solid(font3,"N = %d" , comf,pn);
+    SDL_Init(SDL_INIT_TIMER) ;
+    int d1 = 0 ;
+    SDL_Surface * taime = TTF_RenderText_Solid(font,int_to_string(d1) , comf);
+    CreateLettre(renderer,taime,100,100,22,22) ;
+    SDL_Renderer *tr = NULL ;
+ //   tr =  SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+
+    listeC P = NULL ;
+    liste t = NULL ;
+    img = IMG_Load("background3.jpg") ;
+    time_t t1;
+    srand ( (unsigned) time (&t1));
+    SDL_CreateImageAndTexture(img,text,renderer,window , 0 , 0);
+    CreateLettre(renderer ,surfacew1, 209 , 602 , 333 , 40) ;
+//    CreateLettre(renderer ,Nn, 340 , 700 , 333 , 40) ;
+    A = IMG_Load("A.jpg") ;
+    ajouter_tete(&t,A,1) ;
+    rempli(t) ;
+    SDL_TimerID timer1,timer2 ;
+
+   int now , start ;
+
+
+j = n-pn+1 ;
+   //  SDL_Surface * Nn = TTF_RenderText_Solid(font3,"N = 3" , comf);
+         //   CreateLettre(renderer ,Nn, 340 , 700 , 333 , 40) ;
+switch(n)
+{
+    case 4:
+    xc = 295 ;
+    break ;
+    case 5:
+    xc = 295-20 ;
+    break ;
+    case 6:
+    xc = 295-20-20 ;
+    break ;
+    case 7:
+    xc = 295-20-20-20 ;
+    break ;
+    case 8:
+    xc = 295-80;
+    break ;
+    default :
+        break ;
+}
+
+///CREATION DE LA COMB INITAL
+combInit(&(T4[0]) , &(T4F[0]) , n , &P , t) ;
+
+///AFICHAGE DE LA COMB INITIAL
+    imp_tab(&(T4[0]), n,xc ,48, renderer) ;
+///CREATION DE LA COMB FINALE
+    P = NULL ;
+    combF(&(T4F[0]),&(T4[0]),n,&P,t,pn) ;
+///AFICHAGE DE LA COM FINALE
+  //  imp_tabFINL(&(T4F[0]), n ,662, renderer) ;
+    imp_tab(&(T4F[0]), n,xc ,662, renderer) ;
+
+    start = SDL_GetTicks() ;
+    SDL_bool program_launched = SDL_TRUE;
+/// GAME ON
+        while(program_launched){
+
+            SDL_Event event;
+            now = SDL_GetTicks() - start ;
+            Draw_Timer(renderer,now) ;
+            CreateLettre(renderer,NULL,0,0,0,0) ;
+
+
+            //draw_game(window,renderer) ;
+            SDL_RenderClear(renderer) ;
+
+
+            while(SDL_PollEvent(&event)){
+             imp_tab(&(T4[0]), n,xc ,48, renderer) ;
+
+                switch(event.type){
+            case SDL_MOUSEBUTTONDOWN :
+
+
+/// IF CLICK ON 1
+                if((event.motion.x <xc+40 && event.motion.x>xc)&&(event.motion.y<max && event.motion.y>min))
+                {   switch(pn)
+                {
+                    case 2 :
+                         change2(1,&(T4[0]),t) ;
+                    break ;
+                    case 3 :
+                         change3(1,&(T4[0]),t) ;
+                    break ;
+                    case 4 :
+                         change4(1,&(T4[0]),t) ;
+                    break ;
+                    case 5 :
+                        change5(1,&(T4[0]),t) ;
+                    break ;
+                }
+
+                    imp_tab(&(T4[0]), n ,xc,y, renderer) ;
+                    y = y + 50;
+                    x++ ;
+                     min  = min + 50 ;
+                     max  = max + 50 ;
+
+
+                }
+/// IF CLICK ON 2
+                else if((event.motion.x <xc+80 && event.motion.x>xc+40)&&(event.motion.y<max && event.motion.y>min))
+                {
+                  switch(pn)
+                {
+                    case 2 :
+                         change2(2,&(T4[0]),t) ;
+                    break ;
+                    case 3 :
+                         change3(2,&(T4[0]),t) ;
+                    break ;
+                    case 4 :
+                         change4(2,&(T4[0]),t) ;
+                    break ;
+                    case 5 :
+                        change5(2,&(T4[0]),t) ;
+                    break ;
+
+                }
+
+                    imp_tab(&(T4[0]), n ,xc,y, renderer) ;
+                    y = y + 50;
+                    x++ ;
+                     min  = min + 50 ;
+                     max  = max + 50 ;
+
+
+                }
+
+/// IF CLICK ON 3
+                else if((event.motion.x <xc+120 && event.motion.x>xc+80)&&(event.motion.y<max && event.motion.y>min) && (j>2))
+                {
+                    switch(pn)
+                {
+                    case 2 :
+                         change2(3,&(T4[0]),t) ;
+                    break ;
+                    case 3 :
+                         change3(3,&(T4[0]),t) ;
+                    break ;
+                    case 4 :
+                         change4(3,&(T4[0]),t) ;
+                    break ;
+                     case 5 :
+                        change5(3,&(T4[0]),t) ;
+                    break;
+
+                }
+
+
+                    imp_tab(&(T4[0]), n ,xc,y, renderer) ;
+                    y = y + 50;
+                    x++ ;
+                     min  = min + 50 ;
+                     max  = max + 50 ;
+
+
+                }
+/// IF CLICK ON 4
+               else if((event.motion.x <xc+160 && event.motion.x>xc+120)&&(event.motion.y<max && event.motion.y>min) && (n>4) && (j>3))
+               {
+                     switch(pn)
+                {   case 2 :
+                        change2(4,&(T4[0]),t) ;
+                    break ;
+                    case 3 :
+                         change3(4,&(T4[0]),t) ;
+                    break ;
+                    case 4 :
+                         change4(4,&(T4[0]),t) ;
+
+                    break ;
+                    case 5 :
+                        change5(4,&(T4[0]),t) ;
+                }
+
+
+                    imp_tab(&(T4[0]), n ,xc,y, renderer) ;
+                    y = y + 50;
+                    x++ ;
+                     min  = min + 50 ;
+                     max  = max + 50 ;
+               }
+/// IF CLICK ON 5
+
+                else if(((event.motion.x <(xc+200)) && (event.motion.x>xc+160))&&((event.motion.y<max) && (event.motion.y>min)) && (n>5) && (j>4))
+               {
+                     switch(pn)
+                {
+                    case 3 :
+                         change3(5,&(T4[0]),t) ;
+                    break ;
+                    case 4 :
+                         change4(5,&(T4[0]),t) ;
+                    break ;
+                }
+
+
+                    imp_tab(&(T4[0]), n ,xc,y, renderer) ;
+                    y = y + 50;
+                    x++ ;
+                     min  = min + 50 ;
+                     max  = max + 50 ;
+               }
+ {printf("ELSE");}
+
+
+                test = same(&(T4[0]),&(T4F[0]),4,t) ;
+                if(test == 1)
+                {
+
+                 YOUWON(window,renderer) ;
+                 screen = 100 ;
+
+                            while(screen == 100)
+                            {
+                                SDL_DestroyRenderer(renderer);
+                            }
+                }
+
+                if(x==10) YOULOST(window ,renderer) ;
+
+
+                break ;
+
+
+
+
+                case SDL_QUIT:
+                           program_launched = SDL_FALSE;
+                           break;
+
+                      default:
+                          break;
+                }
+                }
+
+            }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+}
+
+
+
+void showN (SDL_Window *window , SDL_Renderer *renderer)
+{
+     SDL_RenderClear(renderer) ;
+     SDL_Surface *img = NULL,*tn,*tpn,*grandN,*petitN,*start,*start2 ;
+     img = IMG_Load("background3.jpg") ;
+     SDL_Texture *text = NULL;
+     SDL_CreateImageAndTexture(img,text,renderer,window , 0 , 0);
+     int n , pn ;
+     SDL_Color comf = {255,255,255} ;
+     SDL_Color colorTitle2 = { 250, 179, 39  };
+
+    /// GRAND N
+    do
+    {
+        n = 1 + rand() ;
+    }while(n < 4 || n > 8) ;
+    /// PETIT N
+    do
+    {
+        pn = 1 + rand() ;
+    }while(pn < (n/2) || pn >= (n-1) ) ;
+    printf("N = %d\n",n) ;
+    printf("n = %d",pn) ;
+   // n = 8 ; pn = 6 ;
+    if(n==8 && pn ==6 ) pn = 5 ;
+    TTF_Font * font = TTF_OpenFont("Gameplay.ttf", 60);
+    tn = TTF_RenderText_Solid(font, int_to_string(n), comf);
+    grandN = TTF_RenderText_Solid(font, "Grand N", comf);
+    petitN = TTF_RenderText_Solid(font, "Petit N", comf);
+    tpn = TTF_RenderText_Solid(font, int_to_string(pn), comf);
+    start = TTF_RenderText_Solid(font, "START", comf);
+    start2 = TTF_RenderText_Solid(font, "START", colorTitle2);
+    SDL_bool program_launched = SDL_TRUE;
+    int screen = 21 ;
+    CreateLettre(renderer,tn,354,182,0,0) ;
+    CreateLettre(renderer,grandN,233,85,0,0) ;
+    CreateLettre(renderer,petitN,240,288,0,0) ;
+    CreateLettre(renderer,tpn,354,385,0,0) ;
+    CreateLettre(renderer,start,264,609,0,0) ;
+ while(program_launched){
+            SDL_Event event;
+
+            while(SDL_PollEvent(&event)){
+                switch(event.type){
+                    case SDL_MOUSEBUTTONDOWN :
+                        if((event.motion.x <485 && event.motion.x>264)&&(event.motion.y<667&& event.motion.y>609))
+                        {      screen = 40 ;
+                        while(screen == 40)
+                        {
+                            jouer(window,renderer,n,pn) ;
+                        }
+
+
+
+                        }
+                    break ;
+                    case SDL_MOUSEMOTION :
+                         if((event.motion.x <485 && event.motion.x>264)&&(event.motion.y<667&& event.motion.y>609))
+                        {
+                                    CreateLettre(renderer,start2,264,609,0,0) ;
+
+
+                        }else {CreateLettre(renderer,start,264,609,0,0) ;}
+                    break ;
+
+                      case SDL_QUIT:
+                           program_launched = SDL_FALSE;
+                           break;
+
+                      default:
+                          break;
+                }
+                }
+            }
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
